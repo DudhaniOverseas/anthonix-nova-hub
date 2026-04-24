@@ -19,13 +19,14 @@ const signUpSchema = signInSchema.extend({
 });
 
 const Auth = () => {
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, signIn, signUp, loading, redirectPath } = useAuth();
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
 
+  // Auto-redirect once we know the user's role
   useEffect(() => {
-    if (!loading && user) navigate('/admin', { replace: true });
-  }, [user, loading, navigate]);
+    if (!loading && user) navigate(redirectPath, { replace: true });
+  }, [user, loading, redirectPath, navigate]);
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,10 +40,8 @@ const Auth = () => {
     const { error } = await signIn(parsed.data.email, parsed.data.password);
     setBusy(false);
     if (error) toast.error(error.message);
-    else {
-      toast.success('Welcome back');
-      navigate('/admin');
-    }
+    else toast.success('Welcome back');
+    // navigation happens via the effect once roles load
   };
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,9 +60,7 @@ const Auth = () => {
     const { error } = await signUp(parsed.data.email, parsed.data.password, parsed.data.fullName);
     setBusy(false);
     if (error) toast.error(error.message);
-    else {
-      toast.success('Account created — you can now sign in.');
-    }
+    else toast.success('Account created — you can now sign in.');
   };
 
   return (
@@ -74,8 +71,10 @@ const Auth = () => {
           <Link to="/" className="flex justify-center mb-4">
             <img src={logo} alt="AnthoniX Media" className="h-14 w-auto" />
           </Link>
-          <CardTitle className="text-2xl">Admin Access</CardTitle>
-          <CardDescription>Sign in to the AnthoniX CMS</CardDescription>
+          <CardTitle className="text-2xl">Sign In</CardTitle>
+          <CardDescription>
+            Access your AnthoniX account. Staff are redirected to the admin panel automatically.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin">
