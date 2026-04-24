@@ -13,17 +13,23 @@ import {
   Settings,
   LogOut,
   ShieldAlert,
+  FileStack,
+  FolderTree,
+  ListTree,
 } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { toast } from 'sonner';
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/admin/users', label: 'Users', icon: Users, adminOnly: true },
+  { to: '/admin/pages', label: 'Pages', icon: FileStack },
   { to: '/admin/posts', label: 'Posts', icon: FileText },
-  { to: '/admin/media', label: 'Media', icon: ImageIcon },
-  { to: '/admin/students', label: 'Students', icon: GraduationCap },
+  { to: '/admin/categories', label: 'Categories', icon: FolderTree },
+  { to: '/admin/menus', label: 'Menus', icon: ListTree, adminOnly: true },
   { to: '/admin/courses', label: 'Courses', icon: BookOpen },
+  { to: '/admin/students', label: 'Students', icon: GraduationCap },
+  { to: '/admin/media', label: 'Media', icon: ImageIcon },
+  { to: '/admin/users', label: 'Users', icon: Users, adminOnly: true },
   { to: '/admin/payments', label: 'Payments', icon: CreditCard },
   { to: '/admin/settings', label: 'Settings', icon: Settings, adminOnly: true },
 ];
@@ -46,18 +52,19 @@ const AdminLayout = () => {
 
   if (!user) return null;
 
+  // Hard block: non-staff must never reach /admin even by typing the URL
   if (!isStaff) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <div className="glass-card p-8 text-center max-w-md">
           <ShieldAlert className="mx-auto mb-4 text-destructive" size={48} />
-          <h1 className="text-2xl font-bold mb-2">Access Restricted</h1>
+          <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
           <p className="text-muted-foreground mb-6">
-            Your account does not have admin or editor privileges. Ask an existing admin to grant
-            you a role.
+            The admin panel is restricted to staff accounts. Your account doesn't have the required
+            role.
           </p>
           <div className="flex gap-2 justify-center">
-            <Button variant="outline" onClick={() => navigate('/')}>Go Home</Button>
+            <Button variant="outline" onClick={() => navigate('/account')}>My Account</Button>
             <Button variant="glow" onClick={async () => { await signOut(); navigate('/auth'); }}>
               Sign Out
             </Button>

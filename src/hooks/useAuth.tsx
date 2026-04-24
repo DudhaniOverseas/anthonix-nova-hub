@@ -11,6 +11,7 @@ interface AuthCtx {
   loading: boolean;
   isAdmin: boolean;
   isStaff: boolean; // admin or editor
+  redirectPath: string; // where this user should land after login
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -60,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/admin`,
+        emailRedirectTo: `${window.location.origin}/`,
         data: { full_name: fullName },
       },
     });
@@ -71,6 +72,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await supabase.auth.signOut();
   };
 
+  const isAdmin = roles.includes('admin');
+  const isStaff = isAdmin || roles.includes('editor');
+  const redirectPath = isStaff ? '/admin' : '/account';
+
   return (
     <AuthContext.Provider
       value={{
@@ -78,8 +83,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         session,
         roles,
         loading,
-        isAdmin: roles.includes('admin'),
-        isStaff: roles.includes('admin') || roles.includes('editor'),
+        isAdmin,
+        isStaff,
+        redirectPath,
         signIn,
         signUp,
         signOut,

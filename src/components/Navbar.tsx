@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, LayoutDashboard } from 'lucide-react';
+import { Menu, X, LayoutDashboard, UserCircle2, LogIn } from 'lucide-react';
 import logo from '@/assets/logo.png';
+import { useAuth } from '@/hooks/useAuth';
 
 const navLinks = [
   { href: '#services', label: 'Services' },
@@ -15,11 +16,10 @@ const navLinks = [
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, isStaff } = useAuth();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -34,12 +34,10 @@ const Navbar = () => {
     >
       <div className="container-custom">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
           <a href="#" className="flex items-center gap-2">
             <img src={logo} alt="AnthoniX Media" className="h-12 w-auto" />
           </a>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a key={link.href} href={link.href} className="nav-link text-sm font-medium">
@@ -48,17 +46,23 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="outline-glow" size="sm" asChild>
-              <Link to="/admin"><LayoutDashboard size={14} /> Admin</Link>
-            </Button>
-            <Button variant="glow" size="sm">
-              Buy a Plan
-            </Button>
+            {!user ? (
+              <Button variant="outline-glow" size="sm" asChild>
+                <Link to="/auth"><LogIn size={14} /> Sign In</Link>
+              </Button>
+            ) : isStaff ? (
+              <Button variant="outline-glow" size="sm" asChild>
+                <Link to="/admin"><LayoutDashboard size={14} /> Admin</Link>
+              </Button>
+            ) : (
+              <Button variant="outline-glow" size="sm" asChild>
+                <Link to="/account"><UserCircle2 size={14} /> My Account</Link>
+              </Button>
+            )}
+            <Button variant="glow" size="sm">Buy a Plan</Button>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden text-foreground p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -67,7 +71,6 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border bg-background/95 backdrop-blur-xl">
             <div className="flex flex-col gap-4">
@@ -82,12 +85,20 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-2 px-4 pt-4 border-t border-border">
-                <Button variant="outline-glow" className="w-full">
-                  Get a Quote
-                </Button>
-                <Button variant="glow" className="w-full">
-                  Buy a Plan
-                </Button>
+                {!user ? (
+                  <Button variant="outline-glow" className="w-full" asChild>
+                    <Link to="/auth"><LogIn size={14} /> Sign In</Link>
+                  </Button>
+                ) : isStaff ? (
+                  <Button variant="outline-glow" className="w-full" asChild>
+                    <Link to="/admin"><LayoutDashboard size={14} /> Admin Panel</Link>
+                  </Button>
+                ) : (
+                  <Button variant="outline-glow" className="w-full" asChild>
+                    <Link to="/account"><UserCircle2 size={14} /> My Account</Link>
+                  </Button>
+                )}
+                <Button variant="glow" className="w-full">Buy a Plan</Button>
               </div>
             </div>
           </div>
