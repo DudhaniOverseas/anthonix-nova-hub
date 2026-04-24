@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LayoutDashboard } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 const navLinks = [
@@ -48,9 +49,9 @@ const Navbar = () => {
           </div>
 
           {/* CTA Buttons */}
-          <div className="hidden md:flex items-center gap-4">
-            <Button variant="outline-glow" size="sm">
-              Get a Quote
+          <div className="hidden md:flex items-center gap-3">
+            <Button variant="outline-glow" size="sm" asChild>
+              <Link to="/admin"><LayoutDashboard size={14} /> Admin</Link>
             </Button>
             <Button variant="glow" size="sm">
               Buy a Plan
