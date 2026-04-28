@@ -16,6 +16,7 @@ interface UserRow {
   id: string;
   email: string | null;
   full_name: string | null;
+  phone: string | null;
   created_at: string;
   roles: Role[];
 }
@@ -29,7 +30,7 @@ const UsersPage = () => {
     setLoading(true);
     const { data: profiles } = await supabase
       .from('profiles')
-      .select('id, email, full_name, created_at')
+      .select('id, email, full_name, phone, created_at')
       .order('created_at', { ascending: false });
     const { data: roles } = await supabase.from('user_roles').select('user_id, role');
     const map = new Map<string, Role[]>();
@@ -80,6 +81,7 @@ const UsersPage = () => {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
                     <TableHead>Role</TableHead>
                     <TableHead>Joined</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -92,6 +94,11 @@ const UsersPage = () => {
                       <TableRow key={r.id}>
                         <TableCell>{r.full_name ?? '—'}</TableCell>
                         <TableCell className="text-muted-foreground">{r.email ?? '—'}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {r.phone ? (
+                            <a href={`tel:${r.phone}`} className="hover:text-primary">{r.phone}</a>
+                          ) : '—'}
+                        </TableCell>
                         <TableCell>
                           {isAdmin ? (
                             <Select value={primary} onValueChange={(v) => setRole(r.id, v as Role)}>

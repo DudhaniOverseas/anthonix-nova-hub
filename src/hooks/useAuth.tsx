@@ -13,7 +13,7 @@ interface AuthCtx {
   isStaff: boolean; // admin or editor
   redirectPath: string; // where this user should land after login
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, fullName: string, phone: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -56,13 +56,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error };
   };
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = async (email: string, password: string, fullName: string, phone: string) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
-        data: { full_name: fullName },
+        data: { full_name: fullName, phone },
       },
     });
     return { error };
