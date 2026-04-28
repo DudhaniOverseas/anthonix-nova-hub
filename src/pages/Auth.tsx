@@ -117,6 +117,17 @@ const Auth = () => {
                   <Input id="su-email" name="email" type="email" required />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="su-phone">Phone Number</Label>
+                  <Input
+                    id="su-phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    maxLength={20}
+                    placeholder="+91 98765 43210"
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="su-password">Password</Label>
                   <Input id="su-password" name="password" type="password" required minLength={6} />
                 </div>
