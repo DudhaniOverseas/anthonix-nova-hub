@@ -23,7 +23,7 @@ interface EnrollmentRow {
 }
 
 const MyAccount = () => {
-  const { user, loading, isStaff, signOut } = useAuth();
+  const { user, loading, isStaff, phoneVerified, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [enrollments, setEnrollments] = useState<EnrollmentRow[]>([]);
@@ -32,7 +32,8 @@ const MyAccount = () => {
 
   useEffect(() => {
     if (!loading && !user) navigate('/auth', { replace: true });
-  }, [loading, user, navigate]);
+    else if (!loading && user && !phoneVerified) navigate('/verify-phone', { replace: true });
+  }, [loading, user, phoneVerified, navigate]);
 
   useEffect(() => {
     if (!user) return;

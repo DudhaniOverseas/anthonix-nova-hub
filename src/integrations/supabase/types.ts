@@ -456,6 +456,39 @@ export type Database = {
           },
         ]
       }
+      phone_verifications: {
+        Row: {
+          attempts: number
+          consumed_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          otp_hash: string
+          phone: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          consumed_at?: string | null
+          created_at?: string
+          expires_at: string
+          id?: string
+          otp_hash: string
+          phone: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          otp_hash?: string
+          phone?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       post_categories: {
         Row: {
           category_id: string
@@ -536,6 +569,8 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          phone: string | null
+          phone_verified: boolean
           updated_at: string
         }
         Insert: {
@@ -545,6 +580,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          phone?: string | null
+          phone_verified?: boolean
           updated_at?: string
         }
         Update: {
@@ -554,6 +591,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          phone?: string | null
+          phone_verified?: boolean
           updated_at?: string
         }
         Relationships: []

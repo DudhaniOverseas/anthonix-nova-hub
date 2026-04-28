@@ -35,12 +35,13 @@ const navItems = [
 ];
 
 const AdminLayout = () => {
-  const { user, loading, isStaff, isAdmin, signOut } = useAuth();
+  const { user, loading, isStaff, isAdmin, phoneVerified, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && !user) navigate('/auth', { replace: true });
-  }, [user, loading, navigate]);
+    else if (!loading && user && !phoneVerified) navigate('/verify-phone', { replace: true });
+  }, [user, loading, phoneVerified, navigate]);
 
   if (loading) {
     return (

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import VerifyPhone from "./pages/VerifyPhone";
 import MyAccount from "./pages/MyAccount";
 import AdminLayout from "./components/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
@@ -33,6 +34,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/verify-phone" element={<VerifyPhone />} />
             <Route path="/account" element={<MyAccount />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
