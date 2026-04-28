@@ -34,6 +34,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/verify-phone" element={<VerifyPhone />} />
             <Route path="/account" element={<MyAccount />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
