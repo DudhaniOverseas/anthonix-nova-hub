@@ -16,6 +16,12 @@ const signInSchema = z.object({
 });
 const signUpSchema = signInSchema.extend({
   fullName: z.string().trim().min(1, 'Name required').max(100),
+  phone: z
+    .string()
+    .trim()
+    .min(7, 'Phone number is required')
+    .max(20, 'Phone number too long')
+    .regex(/^[+\d][\d\s\-()]*$/, 'Enter a valid phone number'),
 });
 
 const Auth = () => {
@@ -51,13 +57,14 @@ const Auth = () => {
       email: fd.get('email'),
       password: fd.get('password'),
       fullName: fd.get('fullName'),
+      phone: fd.get('phone'),
     });
     if (!parsed.success) {
       toast.error(parsed.error.errors[0].message);
       return;
     }
     setBusy(true);
-    const { error } = await signUp(parsed.data.email, parsed.data.password, parsed.data.fullName);
+    const { error } = await signUp(parsed.data.email, parsed.data.password, parsed.data.fullName, parsed.data.phone);
     setBusy(false);
     if (error) toast.error(error.message);
     else toast.success('Account created — you can now sign in.');
