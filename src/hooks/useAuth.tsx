@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -10,8 +10,10 @@ interface AuthCtx {
   roles: Role[];
   loading: boolean;
   isAdmin: boolean;
-  isStaff: boolean; // admin or editor
-  redirectPath: string; // where this user should land after login
+  isStaff: boolean;
+  phoneVerified: boolean;
+  redirectPath: string;
+  refreshProfile: () => Promise<void>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string, phone: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -23,33 +25,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [roles, setRoles] = useState<Role[]>([]);
+  const [phoneVerified, setPhoneVerified] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const fetchRoles = async (uid: string) => {
-    const { data } = await supabase.from('user_roles').select('role').eq('user_id', uid);
-    setRoles((data ?? []).map((r: any) => r.role as Role));
-  };
+  const fetchUserData = useCallback(async (uid: string) => {
+    const [{ data: rolesData }, { data: profile }] = await Promise.all([
+      supabase.from('user_roles').select('role').eq('user_id', uid),
+      supabase.from('profiles').select('phone_verified').eq('id', uid).maybeSingle(),
+    ]);
+    setRoles((rolesData ?? []).map((r: any) => r.role as Role));
+    setPhoneVerified(!!profile?.phone_verified);
+  }, []);
+
+  const refreshProfile = useCallback(async () => {
+    if (user) await fetchUserData(user.id);
+  }, [user, fetchUserData]);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
-        setTimeout(() => fetchRoles(s.user.id), 0);
+        setTimeout(() => fetchUserData(s.user.id), 0);
       } else {
         setRoles([]);
+        setPhoneVerified(false);
       }
     });
 
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       setSession(s);
       setUser(s?.user ?? null);
-      if (s?.user) fetchRoles(s.user.id);
+      if (s?.user) fetchUserData(s.user.id);
       setLoading(false);
     });
 
     return () => sub.subscription.unsubscribe();
-  }, []);
+  }, [fetchUserData]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -74,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const isAdmin = roles.includes('admin');
   const isStaff = isAdmin || roles.includes('editor');
-  const redirectPath = isStaff ? '/admin' : '/account';
+  const redirectPath = !phoneVerified ? '/verify-phone' : isStaff ? '/admin' : '/account';
 
   return (
     <AuthContext.Provider
@@ -85,7 +97,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loading,
         isAdmin,
         isStaff,
+        phoneVerified,
         redirectPath,
+        refreshProfile,
         signIn,
         signUp,
         signOut,
