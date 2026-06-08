@@ -65,6 +65,8 @@ const Navbar = () => {
 
           <button
             className="md:hidden text-foreground p-2"
+            aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}

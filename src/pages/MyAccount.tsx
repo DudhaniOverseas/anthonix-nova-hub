@@ -154,6 +154,7 @@ const MyAccount = () => {
       </header>
 
       <main className="container-custom py-10 grid gap-8 lg:grid-cols-3">
+        <h1 className="sr-only">My Account Dashboard</h1>
         {/* Profile */}
         <Card className="glass-card lg:col-span-1 h-fit">
           <CardHeader>
