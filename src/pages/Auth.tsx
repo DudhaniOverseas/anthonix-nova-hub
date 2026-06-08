@@ -78,6 +78,7 @@ const Auth = () => {
           <Link to="/" className="flex justify-center mb-4">
             <img src={logo} alt="AnthoniX Media" className="h-14 w-auto" />
           </Link>
+          <h1 className="sr-only">Sign In to AnthoniX Media</h1>
           <CardTitle className="text-2xl">Sign In</CardTitle>
           <CardDescription>
             Access your AnthoniX account. Staff are redirected to the admin panel automatically.

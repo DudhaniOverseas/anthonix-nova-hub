@@ -83,6 +83,7 @@ const VerifyPhone = () => {
           <div className="flex justify-center mb-4">
             <img src={logo} alt="AnthoniX Media" className="h-14 w-auto" />
           </div>
+          <h1 className="sr-only">Verify Your Phone Number</h1>
           <CardTitle className="text-2xl">Verify your WhatsApp</CardTitle>
           <CardDescription>
             We'll send a 6-digit code to{' '}
