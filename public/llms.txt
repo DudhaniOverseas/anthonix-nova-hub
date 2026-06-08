@@ -1,0 +1,12 @@
+# AnthoniX Media
+
+> AnthoniX Media delivers web & app development, AI solutions, cybersecurity, and multimedia services to transform businesses for the digital age.
+
+## Pages
+
+- [Home](/): Overview of AnthoniX Media's services, technology stack, pricing, and contact details.
+
+## Contact
+
+- Email: info@anthonixmedia.in
+- Phone: +91-6287585752
